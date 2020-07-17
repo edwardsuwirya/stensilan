@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Stensilan</string>
+    <string name="welcome_text">Selamat Datang</string>
+    <string name="adult_text">Konten khusus dewasa</string>
 </resources>
