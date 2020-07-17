@@ -1,17 +1,36 @@
 package com.enigmacamp.stensilan
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.FragmentManager
+import com.enigmacamp.stensilan.model.Stensil
+import com.enigmacamp.stensilan.service.StensilService
 
 private val TAG = MainActivity::class.java.simpleName
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var welcomeFragment: WelcomeFragment
+    private lateinit var stensilListFragment: StensilListFragment
+    private lateinit var fragmentManager: FragmentManager
+    private lateinit var stensilService: StensilService
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        welcomeFragment = WelcomeFragment.newInstance()
+        stensilListFragment = StensilListFragment.newInstance()
+
+        stensilService = StensilService()
+
+        fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.home_fragment, welcomeFragment).commit()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -25,6 +44,15 @@ class MainActivity : AppCompatActivity() {
                 if (query.isNullOrEmpty()) {
                     return false
                 } else {
+                    hideKeyboard()
+                    searchView.onActionViewCollapsed()
+                    val args = Bundle();
+
+                    args.putString("keyword", query);
+                    args.putParcelableArrayList("list", stensilService.getAllStensilByTitle(query));
+                    stensilListFragment.arguments = args
+                    val fragmentTransaction = fragmentManager.beginTransaction()
+                    fragmentTransaction.replace(R.id.home_fragment, stensilListFragment).commit()
                     return true
                 }
             }
@@ -35,5 +63,13 @@ class MainActivity : AppCompatActivity() {
 
         })
         return true
+    }
+
+    fun hideKeyboard() {
+        val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(
+            currentFocus?.windowToken,
+            InputMethodManager.SHOW_FORCED
+        )
     }
 }
