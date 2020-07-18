@@ -2,6 +2,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion 29
 
@@ -23,7 +25,8 @@ android {
     }
 }
 ext.version = [
-        material: "1.1.0"
+        material : "1.1.0",
+        lifecycle: "2.2.0"
 ]
 
 def version = ext.version
@@ -36,7 +39,15 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
+
     implementation "com.google.android.material:material:$version.material"
+
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$version.lifecycle"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$version.lifecycle"
+    implementation "androidx.lifecycle:lifecycle-extensions:$version.lifecycle"
+    kapt "androidx.lifecycle:lifecycle-compiler:$version.lifecycle"
+    implementation "androidx.activity:activity-ktx:1.1.0"
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

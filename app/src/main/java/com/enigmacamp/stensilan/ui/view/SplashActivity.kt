@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import com.enigmacamp.stensilan.R
 
-class Splash : AppCompatActivity() {
+class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)

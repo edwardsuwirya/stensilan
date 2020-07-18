@@ -5,34 +5,66 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.enigmacamp.stensilan.R
-import com.enigmacamp.stensilan.service.StensilService
+import com.enigmacamp.stensilan.model.Stensil
+import com.enigmacamp.stensilan.repository.DummyStensilDataStore
+import com.enigmacamp.stensilan.repository.StensilRepository
+import com.enigmacamp.stensilan.util.AppFragmentManager
+import com.enigmacamp.stensilan.util.ProgressBarModal
+import com.enigmacamp.stensilan.viewmodel.Injector
+import com.enigmacamp.stensilan.viewmodel.MainActivityViewModel
+import com.enigmacamp.stensilan.viewmodel.MainActivityViewModelFactory
 
 class MainActivity : AppCompatActivity() {
     private lateinit var welcomeFragment: WelcomeFragment
     private lateinit var stensilListFragment: StensilListFragment
-    private lateinit var fragmentManager: FragmentManager
-    private lateinit var stensilService: StensilService
+    private lateinit var fragmentManager: AppFragmentManager
+
+    private lateinit var progressBarModal: AlertDialog
+
+    private lateinit var mainActivityViewModel: MainActivityViewModel
+
+    private var keyword: String = ""
 
     private val TAG = MainActivity::class.java.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        initializeUi()
+    }
 
-        welcomeFragment =
-            WelcomeFragment.newInstance()
-        stensilListFragment =
-            StensilListFragment.newInstance()
+    fun initializeUi() {
+        progressBarModal = ProgressBarModal.progressBar(this)
 
-        stensilService = StensilService()
+        fragmentManager = AppFragmentManager(R.id.home_fragment, supportFragmentManager)
 
-        fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.home_fragment, welcomeFragment).commit()
+        welcomeFragment = WelcomeFragment.newInstance()
+
+        fragmentManager.replaceFragment(welcomeFragment)
+
+
+        val factory = Injector.provideMainActivityModelFactory()
+
+        mainActivityViewModel =
+            ViewModelProvider(this, factory).get(MainActivityViewModel::class.java)
+        mainActivityViewModel.keyword.observe(this, Observer {
+            progressBarModal.show()
+//            Log.d(TAG,it)
+            keyword = it
+            mainActivityViewModel.getAllStensilByTitle(it)
+        })
+        mainActivityViewModel.stensilList.observe(this, Observer {
+//            Log.d(TAG,keyword)
+            onCallListFragment(keyword, it)
+            progressBarModal.dismiss()
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -42,19 +74,12 @@ class MainActivity : AppCompatActivity() {
         val searchView = searchStensil.actionView as SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                Log.d(TAG, query)
                 if (query.isNullOrEmpty()) {
                     return false
                 } else {
                     hideKeyboard()
                     searchView.onActionViewCollapsed()
-                    val args = Bundle();
-
-                    args.putString("keyword", query);
-                    args.putParcelableArrayList("list", stensilService.getAllStensilByTitle(query));
-                    stensilListFragment.arguments = args
-                    val fragmentTransaction = fragmentManager.beginTransaction()
-                    fragmentTransaction.replace(R.id.home_fragment, stensilListFragment).commit()
+                    mainActivityViewModel.setKeyword(query)
                     return true
                 }
             }
@@ -65,6 +90,19 @@ class MainActivity : AppCompatActivity() {
 
         })
         return true
+    }
+
+    fun onCallListFragment(keyword: String, list: List<Stensil>) {
+        stensilListFragment = StensilListFragment.newInstance()
+        val args = Bundle();
+        Log.d(TAG, keyword)
+        args.putString("keyword", keyword);
+        args.putParcelableArrayList(
+            "list", ArrayList(list)
+        );
+
+        stensilListFragment.arguments = args
+        fragmentManager.replaceFragment(stensilListFragment)
     }
 
     fun hideKeyboard() {

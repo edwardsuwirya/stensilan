@@ -8,11 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.enigmacamp.stensilan.R
 import com.enigmacamp.stensilan.ui.adapter.StensilListRecyclerViewAdapter
 import com.enigmacamp.stensilan.model.Stensil
+import com.enigmacamp.stensilan.util.AppFragmentManager
 
 
 class StensilListFragment : Fragment(),
@@ -20,15 +22,26 @@ class StensilListFragment : Fragment(),
     private lateinit var keywordTextView: TextView
     private lateinit var listsRecyclerView: RecyclerView
 
+    private lateinit var fragmentManager: AppFragmentManager
+
     private val TAG = StensilListFragment::class.java.simpleName
 
     companion object {
         const val INTENT_LIST_KEY = "list"
-        const val LIST_DETAIL_REQUEST_CODE = 123
 
         fun newInstance(): StensilListFragment {
             return StensilListFragment()
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        fragmentManager = AppFragmentManager(R.id.home_fragment, activity!!.supportFragmentManager)
+        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                fragmentManager.replaceFragment(WelcomeFragment.newInstance())
+            }
+        })
     }
 
     override fun onCreateView(
@@ -39,7 +52,7 @@ class StensilListFragment : Fragment(),
         val args = getArguments();
         val keyword = args?.getString("keyword", "");
         val list = args?.getParcelableArrayList<Stensil>("list") as ArrayList<Stensil>
-        Log.d(TAG, list.toString())
+        Log.d(TAG, keyword)
         keywordTextView = view.findViewById(R.id.keyword_textview)
         keywordTextView.text = getString(R.string.search_keyword, keyword)
 

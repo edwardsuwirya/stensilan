@@ -11,7 +11,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".ui.view.StensilContentActivity"></activity>
         <activity
-            android:name=".ui.view.Splash"
+            android:name=".ui.view.SplashActivity"
             android:theme="@style/Theme.Transparent">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
