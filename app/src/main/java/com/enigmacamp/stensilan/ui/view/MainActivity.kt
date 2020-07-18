@@ -1,4 +1,4 @@
-package com.enigmacamp.stensilan
+package com.enigmacamp.stensilan.ui.view
 
 import android.content.Context
 import android.os.Bundle
@@ -8,10 +8,8 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.FragmentManager
-import com.enigmacamp.stensilan.model.Stensil
+import com.enigmacamp.stensilan.R
 import com.enigmacamp.stensilan.service.StensilService
-
-private val TAG = MainActivity::class.java.simpleName
 
 class MainActivity : AppCompatActivity() {
     private lateinit var welcomeFragment: WelcomeFragment
@@ -19,12 +17,16 @@ class MainActivity : AppCompatActivity() {
     private lateinit var fragmentManager: FragmentManager
     private lateinit var stensilService: StensilService
 
+    private val TAG = MainActivity::class.java.simpleName
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        welcomeFragment = WelcomeFragment.newInstance()
-        stensilListFragment = StensilListFragment.newInstance()
+        welcomeFragment =
+            WelcomeFragment.newInstance()
+        stensilListFragment =
+            StensilListFragment.newInstance()
 
         stensilService = StensilService()
 

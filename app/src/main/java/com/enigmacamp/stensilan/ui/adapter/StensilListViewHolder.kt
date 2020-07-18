@@ -1,4 +1,4 @@
-package com.enigmacamp.stensilan.adapter
+package com.enigmacamp.stensilan.ui.adapter
 
 import android.view.View
 import android.widget.TextView

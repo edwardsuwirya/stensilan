@@ -1,4 +1,4 @@
-package com.enigmacamp.stensilan
+package com.enigmacamp.stensilan.ui.view
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,16 +10,17 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.enigmacamp.stensilan.adapter.StensilListRecyclerViewAdapter
+import com.enigmacamp.stensilan.R
+import com.enigmacamp.stensilan.ui.adapter.StensilListRecyclerViewAdapter
 import com.enigmacamp.stensilan.model.Stensil
-import kotlinx.android.synthetic.main.fragment_stensil_list.*
 
-private val TAG = StensilListFragment::class.java.simpleName
 
 class StensilListFragment : Fragment(),
     StensilListRecyclerViewAdapter.ListSelectionRecyclerViewClickListener {
     private lateinit var keywordTextView: TextView
     private lateinit var listsRecyclerView: RecyclerView
+
+    private val TAG = StensilListFragment::class.java.simpleName
 
     companion object {
         const val INTENT_LIST_KEY = "list"

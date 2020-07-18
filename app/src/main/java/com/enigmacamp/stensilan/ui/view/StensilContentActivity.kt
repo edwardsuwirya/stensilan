@@ -1,13 +1,9 @@
-package com.enigmacamp.stensilan
+package com.enigmacamp.stensilan.ui.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.enigmacamp.stensilan.R
 import com.enigmacamp.stensilan.model.Stensil
-import com.google.android.material.snackbar.Snackbar
 
 class StensilContentActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
