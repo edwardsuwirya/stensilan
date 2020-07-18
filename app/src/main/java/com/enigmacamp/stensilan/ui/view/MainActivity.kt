@@ -16,6 +16,7 @@ import com.enigmacamp.stensilan.model.Stensil
 import com.enigmacamp.stensilan.repository.DummyStensilDataStore
 import com.enigmacamp.stensilan.repository.StensilRepository
 import com.enigmacamp.stensilan.util.AppFragmentManager
+import com.enigmacamp.stensilan.util.AppSystemService
 import com.enigmacamp.stensilan.util.ProgressBarModal
 import com.enigmacamp.stensilan.viewmodel.Injector
 import com.enigmacamp.stensilan.viewmodel.MainActivityViewModel
@@ -49,21 +50,23 @@ class MainActivity : AppCompatActivity() {
 
         fragmentManager.replaceFragment(welcomeFragment)
 
-
         val factory = Injector.provideMainActivityModelFactory()
 
         mainActivityViewModel =
             ViewModelProvider(this, factory).get(MainActivityViewModel::class.java)
         mainActivityViewModel.keyword.observe(this, Observer {
-            progressBarModal.show()
 //            Log.d(TAG,it)
             keyword = it
             mainActivityViewModel.getAllStensilByTitle(it)
         })
-        mainActivityViewModel.stensilList.observe(this, Observer {
+        mainActivityViewModel.stensilState.observe(this, Observer {
 //            Log.d(TAG,keyword)
-            onCallListFragment(keyword, it)
-            progressBarModal.dismiss()
+            if (it.loading) {
+                progressBarModal.show()
+            } else {
+                onCallListFragment(keyword, it.data!!)
+                progressBarModal.dismiss()
+            }
         })
     }
 
@@ -77,7 +80,6 @@ class MainActivity : AppCompatActivity() {
                 if (query.isNullOrEmpty()) {
                     return false
                 } else {
-                    hideKeyboard()
                     searchView.onActionViewCollapsed()
                     mainActivityViewModel.setKeyword(query)
                     return true
@@ -87,7 +89,6 @@ class MainActivity : AppCompatActivity() {
             override fun onQueryTextChange(newText: String?): Boolean {
                 return false
             }
-
         })
         return true
     }
@@ -103,13 +104,5 @@ class MainActivity : AppCompatActivity() {
 
         stensilListFragment.arguments = args
         fragmentManager.replaceFragment(stensilListFragment)
-    }
-
-    fun hideKeyboard() {
-        val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputManager.hideSoftInputFromWindow(
-            currentFocus?.windowToken,
-            InputMethodManager.SHOW_FORCED
-        )
     }
 }
