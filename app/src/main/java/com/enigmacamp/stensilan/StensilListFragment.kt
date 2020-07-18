@@ -1,5 +1,6 @@
 package com.enigmacamp.stensilan
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -15,9 +16,19 @@ import kotlinx.android.synthetic.main.fragment_stensil_list.*
 
 private val TAG = StensilListFragment::class.java.simpleName
 
-class StensilListFragment : Fragment() {
+class StensilListFragment : Fragment(),
+    StensilListRecyclerViewAdapter.ListSelectionRecyclerViewClickListener {
     private lateinit var keywordTextView: TextView
     private lateinit var listsRecyclerView: RecyclerView
+
+    companion object {
+        const val INTENT_LIST_KEY = "list"
+        const val LIST_DETAIL_REQUEST_CODE = 123
+
+        fun newInstance(): StensilListFragment {
+            return StensilListFragment()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,14 +44,19 @@ class StensilListFragment : Fragment() {
 
         listsRecyclerView = view.findViewById(R.id.list_recyclerview)
         listsRecyclerView.layoutManager = LinearLayoutManager(container!!.context)
-        listsRecyclerView.adapter = StensilListRecyclerViewAdapter(list)
+        listsRecyclerView.adapter = StensilListRecyclerViewAdapter(list, this)
 
         return view
     }
 
-    companion object {
-        fun newInstance(): StensilListFragment {
-            return StensilListFragment()
-        }
+
+    private fun showListDetail(stensil: Stensil) {
+        val listDetailIntent = Intent(activity, StensilContentActivity::class.java)
+        listDetailIntent.putExtra(INTENT_LIST_KEY, stensil)
+        activity!!.startActivity(listDetailIntent)
+    }
+
+    override fun listItemClicked(list: Stensil) {
+        showListDetail(list)
     }
 }

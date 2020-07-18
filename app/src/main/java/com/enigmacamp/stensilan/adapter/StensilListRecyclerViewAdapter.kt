@@ -6,8 +6,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.enigmacamp.stensilan.R
 import com.enigmacamp.stensilan.model.Stensil
 
-class StensilListRecyclerViewAdapter(private val lists: ArrayList<Stensil>) :
+class StensilListRecyclerViewAdapter(
+    private val lists: ArrayList<Stensil>,
+    val clickListener: ListSelectionRecyclerViewClickListener
+) :
     RecyclerView.Adapter<StensilListViewHolder>() {
+    interface ListSelectionRecyclerViewClickListener {
+        fun listItemClicked(list: Stensil)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StensilListViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
             R.layout.stensil_list_view_holder,
@@ -24,5 +31,8 @@ class StensilListRecyclerViewAdapter(private val lists: ArrayList<Stensil>) :
     override fun onBindViewHolder(holder: StensilListViewHolder, position: Int) {
         holder.category.text = lists.get(position).category
         holder.title.text = lists.get(position).title
+        holder.itemView.setOnClickListener {
+            clickListener.listItemClicked(lists.get(position))
+        }
     }
 }
