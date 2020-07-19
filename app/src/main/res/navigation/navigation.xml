@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/welcomeFragment">
+    <fragment
+        android:id="@+id/welcomeFragment"
+        android:name="com.enigmacamp.stensilan.ui.view.WelcomeFragment"
+        android:label="fragment_welcome"
+        tools:layout="@layout/fragment_welcome" >
+        <action
+            android:id="@+id/action_welcomeFragment_to_stensilListFragment"
+            app:destination="@id/stensilListFragment"
+            app:enterAnim="@anim/fragment_fade_enter" />
+    </fragment>
+    <fragment
+        android:id="@+id/stensilListFragment"
+        android:name="com.enigmacamp.stensilan.ui.view.StensilListFragment"
+        android:label="fragment_stensil_list"
+        tools:layout="@layout/fragment_stensil_list" >
+        <argument
+            android:name="keyword"
+            app:argType="string" />
+        <argument
+            android:name="list"
+            app:argType="com.enigmacamp.stensilan.model.Stensil[]" />
+    </fragment>
+</navigation>

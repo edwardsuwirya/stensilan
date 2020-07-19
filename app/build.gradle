@@ -25,8 +25,9 @@ android {
     }
 }
 ext.version = [
-        material : "1.1.0",
-        lifecycle: "2.2.0"
+        material  : "1.1.0",
+        lifecycle : "2.2.0",
+        navigation: "2.3.0"
 ]
 
 def version = ext.version
@@ -46,7 +47,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$version.lifecycle"
     implementation "androidx.lifecycle:lifecycle-extensions:$version.lifecycle"
     kapt "androidx.lifecycle:lifecycle-compiler:$version.lifecycle"
-    implementation "androidx.activity:activity-ktx:1.1.0"
+    implementation "androidx.navigation:navigation-fragment-ktx:$version.navigation"
+    implementation "androidx.navigation:navigation-ui-ktx:$version.navigation"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

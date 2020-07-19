@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.enigmacamp.stensilan.R
 import com.enigmacamp.stensilan.model.Stensil
@@ -18,7 +19,6 @@ import kotlinx.android.synthetic.main.fragment_stensil_list.*
 
 class StensilListFragment : Fragment(),
     StensilListRecyclerViewAdapter.ListSelectionRecyclerViewClickListener {
-    private lateinit var fragmentManager: AppFragmentManager
 
     private val TAG = StensilListFragment::class.java.simpleName
 
@@ -32,10 +32,10 @@ class StensilListFragment : Fragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        fragmentManager = AppFragmentManager(R.id.home_fragment, activity!!.supportFragmentManager)
-        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
+        requireActivity().onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                fragmentManager.replaceFragment(WelcomeFragment.newInstance())
+                Navigation.findNavController(requireActivity(), R.id.myNavHostFragment)
+                    .popBackStack()
             }
         })
     }
@@ -52,19 +52,19 @@ class StensilListFragment : Fragment(),
         super.onViewCreated(view, savedInstanceState)
         val args = getArguments();
         val keyword = args?.getString("keyword", "");
-        val list = args?.getParcelableArrayList<Stensil>("list") as ArrayList<Stensil>
+        val list = args?.getParcelableArray("list") as Array<Stensil>
         Log.d(TAG, keyword)
         keyword_textview.text = getString(R.string.search_keyword, keyword)
 
         list_recyclerview.layoutManager = LinearLayoutManager(view.context)
-        list_recyclerview.adapter = StensilListRecyclerViewAdapter(list, this)
+        list_recyclerview.adapter = StensilListRecyclerViewAdapter(list.toList(), this)
     }
 
 
     private fun showListDetail(stensil: Stensil) {
         val listDetailIntent = Intent(activity, StensilContentActivity::class.java)
         listDetailIntent.putExtra(INTENT_LIST_KEY, stensil)
-        activity!!.startActivity(listDetailIntent)
+        requireActivity().startActivity(listDetailIntent)
     }
 
     override fun listItemClicked(list: Stensil) {

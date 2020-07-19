@@ -7,7 +7,7 @@ import com.enigmacamp.stensilan.R
 import com.enigmacamp.stensilan.model.Stensil
 
 class StensilListRecyclerViewAdapter(
-    private val lists: ArrayList<Stensil>,
+    private val lists: List<Stensil>,
     val clickListener: ListSelectionRecyclerViewClickListener
 ) :
     RecyclerView.Adapter<StensilListViewHolder>() {

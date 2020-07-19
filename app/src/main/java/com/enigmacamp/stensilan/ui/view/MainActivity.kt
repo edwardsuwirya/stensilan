@@ -11,6 +11,8 @@ import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import com.enigmacamp.stensilan.R
 import com.enigmacamp.stensilan.model.Stensil
 import com.enigmacamp.stensilan.repository.DummyStensilDataStore
@@ -25,7 +27,7 @@ import com.enigmacamp.stensilan.viewmodel.MainActivityViewModelFactory
 class MainActivity : AppCompatActivity() {
     private lateinit var welcomeFragment: WelcomeFragment
     private lateinit var stensilListFragment: StensilListFragment
-    private lateinit var fragmentManager: AppFragmentManager
+//    private lateinit var fragmentManager: AppFragmentManager
 
     private lateinit var progressBarModal: AlertDialog
 
@@ -43,13 +45,7 @@ class MainActivity : AppCompatActivity() {
 
     fun initializeUi() {
         progressBarModal = ProgressBarModal.progressBar(this)
-
-        fragmentManager = AppFragmentManager(R.id.home_fragment, supportFragmentManager)
-
         welcomeFragment = WelcomeFragment.newInstance()
-
-        fragmentManager.replaceFragment(welcomeFragment)
-
         val factory = Injector.provideMainActivityModelFactory()
 
         mainActivityViewModel =
@@ -98,11 +94,12 @@ class MainActivity : AppCompatActivity() {
         val args = Bundle();
         Log.d(TAG, keyword)
         args.putString("keyword", keyword);
-        args.putParcelableArrayList(
-            "list", ArrayList(list)
+        args.putParcelableArray(
+            "list", list.toTypedArray()
         );
 
         stensilListFragment.arguments = args
-        fragmentManager.replaceFragment(stensilListFragment)
+        Navigation.findNavController(this, R.id.myNavHostFragment)
+            .navigate(R.id.action_welcomeFragment_to_stensilListFragment, args)
     }
 }

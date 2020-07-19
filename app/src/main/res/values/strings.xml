@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">Stensilan</string>
-    <string name="welcome_text">Selamat Datang</string>
+    <string name="welcome_text">Selamat Datang,Stensil Maniak</string>
     <string name="adult_text">Konten khusus dewasa</string>
+    <string name="nsfw_text">Tidak aman di lingkungan pekerjaan</string>
     <string name="search_keyword">Search %1$s</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
